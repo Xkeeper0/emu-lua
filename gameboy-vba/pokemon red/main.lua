@@ -3,6 +3,7 @@
 	game	= "red"
 
 	m		= require("data/memory")
+	mObject	= require("data/memoryObject")
 
 	offsets	= require("data/memoryAddresses")
 
@@ -17,9 +18,7 @@
 	fart		= require("graphics/fart")
 
 
-	pokemon.data.getPartyPokemon()
-
-
+	-- good function name (tm)
 	function crap_debug_everywhere(t)
 		local tmp	= 0
 		for k,v in pairs(t) do
@@ -30,7 +29,7 @@
 
 
 	while true do
-		gui.text(132, 137, "running")
+		--gui.text(132, 137, "running")
 
 		local party	= pokemon.data.getPartyPokemon()
 
@@ -42,9 +41,7 @@
 
 		local ipt	= input.get()
 		--gui.text(ipt.xmouse, ipt.ymouse, "x")
-		gui.text(1, 137, string.format("%3d %3d", ipt.xmouse, ipt.ymouse))
-
-
+		--gui.text(1, 137, string.format("%3d %3d", ipt.xmouse, ipt.ymouse))
 
 		emu.frameadvance()
 	end
