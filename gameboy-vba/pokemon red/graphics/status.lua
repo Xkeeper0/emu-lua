@@ -25,9 +25,9 @@
 
 	function status.drawSinglePokemonStats(poke)
 
+		-- Must have pokemon to draw otherwise (welp)
+		if not poke then return end
 
-		--[[
-		--]]--
 
 		gui.box(-1, -1, 160, 80, "#000000e0", "#000000d0")
 
