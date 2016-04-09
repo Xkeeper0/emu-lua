@@ -1,0 +1,7 @@
+-- notes --
+
+
+68k --
+
+0630	Puggsy X value
+06E2	Puggsy Y value
