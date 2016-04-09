@@ -18,6 +18,14 @@
 	fart		= require("graphics/fart")
 
 
+	test		= require("data/test")
+
+
+	local tv	= test.new(0)
+	print(tv.level)
+	print(tv.hp.current)
+
+
 	-- good function name (tm)
 	function crap_debug_everywhere(t)
 		local tmp	= 0
