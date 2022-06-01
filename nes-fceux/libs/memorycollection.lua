@@ -23,6 +23,9 @@
 
 	function MemoryCollection:__index(key)
 
+		if not self._m[key] then
+			return nil
+		end
 		if self._m[key] then
 			return self._m[key]:read()
 

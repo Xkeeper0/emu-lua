@@ -165,9 +165,13 @@ function fart()
 			color	= {"white", "#00000080"}
 		end
 		-- Put object index and object ID on screen
-		gui.box(screenPos.x - 2, screenPos.y - 2,
-				screenPos.x + 21, screenPos.y + 8, color[2], "clear")
-		gui.text(screenPos.x, screenPos.y, string.format("%X:%02X", id, obj.type), color[1], "clear")
+		-- gui.box(screenPos.x - 2, screenPos.y - 2,
+		-- 		screenPos.x + 21, screenPos.y + 8, color[2], "clear")
+		gui.line(screenPos.x, screenPos.y,
+			screenPos.x + 16, screenPos.y     , color[1])
+		gui.line(screenPos.x, screenPos.y,
+			screenPos.x     , screenPos.y + 16, color[1])
+		gui.text(screenPos.x + 2, screenPos.y + 2, string.format("%X\n%02X", id, obj.type), color[1], color[2])
 
 		if id == showSpriteId then
 			if showSpriteData then
@@ -233,7 +237,7 @@ while true do
 		showSpriteId	= showSpriteId + 1
 	end
 
-	if 1 or i['A'] then
+	if 0 or i['A'] then
 		for s = 0, 63 do
 			local a	= 0x0200 + s * 4
 			local f	= rb(a)
