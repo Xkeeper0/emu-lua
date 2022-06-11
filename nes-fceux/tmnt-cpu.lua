@@ -25,14 +25,14 @@ input				= require("libs/input")
 	05	shuriken pickup
 	06	triple stars pickup
 	07	boomerang pickup
-	08	scroll
+	08	scroll pickup
 	09	?
 	0a	?
 	0b	turtle head pickup, invuln
 	0c	missile pickup
 	0d	rope pickup
-	0e	?????????????????????????????
-	...
+	0e	turtle rescue -- restores leo to full health by default
+	0f	invisible?
 
 --]]
 
@@ -153,7 +153,7 @@ function drawObjects()
 			end
 			gui.line(objX - 4, objY    , objX + 4, objY    , 'white')
 			gui.line(objX    , objY - 4, objX    , objY + 4, 'white')
-			gui.text(objX + 2, objY + 2, string.format('%X', i), "white", "black")
+			gui.text(objX + 2, objY + 2, string.format('%X %02X', i, objects[i].characteristics1), "white", "black")
 			
 			local objHealth	= objects[i].health
 			if objHealth > 0 and objHealth ~= 0xFF then
