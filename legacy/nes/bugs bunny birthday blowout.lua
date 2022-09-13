@@ -92,6 +92,8 @@ while (true) do
 	spr2		= memory.readbyte(0x106);
 	enef		= memory.readbyte(0x7680);
 	
+	--[[
+
 	if (inpt['shift']) and math.fmod(timer, 2) == 0 then
 		inptold	= {};
 		
@@ -117,15 +119,17 @@ while (true) do
 		memory.writebyte(0x7680, enef - 1);
 	end
 
+	--]]
 
 	if (inpt['Q'] and not inptold['Q']) then
 		forcefull	= not forcefull;
 	end
 	
-	
+	--[[
 	
 	gui.text(180, 30, string.format("1: %02X [I/U]\n2: %02X [J/K]", spr1, spr2));
 	
+	--]]
 	
 	timer	= timer + 1;
 
