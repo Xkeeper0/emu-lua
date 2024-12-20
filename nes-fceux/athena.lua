@@ -128,7 +128,7 @@ function trackStatus()
 	if mem1 == 0x80 then
 		-- data is pulled in order
 		--+1 2 3 4 5/6
-		-- Y X A P (rts)
+		-- Y X A P (PC-1)
 		local stackOfs	= 0x100 + mem2
 		local saveY		= memory.readbyte(stackOfs + 1)
 		local saveX		= memory.readbyte(stackOfs + 2)
@@ -145,7 +145,7 @@ memory.registerexecute(0xC37D, trackStatus)
 
 
 
-
+local showGrid	= false
 
 
 while true do
@@ -162,9 +162,19 @@ while true do
 
 	gui.text(200, 0, string.format("%04X B=%d", camX, camera.onBottom))
 
-	drawTileGrid()
 
+	if showGrid then
+		drawTileGrid()
+	end
+	if input.pressed("N") then
+		showGrid	= not showGrid
+	end
+
+
+	gui.text(0, 0, string.format("%02X", memory.readbyte(0x0000)))
 	trackCount	= 0
+
+	input.update()
 	emu.frameadvance()
 
 end

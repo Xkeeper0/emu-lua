@@ -1,4 +1,17 @@
-spriteBase	= 0x600
+spriteBase	= 0x200
+
+
+
+require("libs/toolkit")
+require("libs/functions")
+
+-- Require some modules/classes
+MemoryAddress		= require("libs/memoryaddress")
+MemoryCollection	= require("libs/memorycollection")
+
+input				= require("libs/input")
+
+
 
 local oldSprites	= {}
 inRegister	= false
@@ -92,25 +105,34 @@ end
 local pos	= { x = 220, y = 204 }
 local mul	= { x = 4, y = 4 }
 
+timer = 0
 
 while true do
 	gui.text(232, 0, string.format("%04X", spriteBase))
 	m.restoreUnusedSprites()
 
-	gui.box(pos.x - 1, pos.y - 1, pos.x + 8 * mul.x - 1, pos.y + 8 * mul.y - 1, "black", "black")
+	--gui.box(pos.x - 1, pos.y - 1, pos.x + 8 * mul.x - 1, pos.y + 8 * mul.y - 1, "black", "black")
 
 	for s = 0, 63 do
 		local a	= spriteBase + s * 4
 		local c	= (oldSprites[a]['used']) and "white" or "red"
-
 		local x	= (s % 8) * mul.x + pos.x
 		local y	= (math.floor(s / 8)) * mul.y + pos.y
 
 		--gui.text((s % 8) * 10, math.floor(s / 8) * 10, tostring(oldSprites[a]['used']))
+		--gui.box(x, y, x + mul.x - 2, y + mul.y - 2, c)
+		local b = button(x, y, mul.x, mul.y, c, true)
+		if b == -1 then
+			local sx = memory.readbyte(spriteBase + s * 4 + 3)
+			local sy = memory.readbyte(spriteBase + s * 4 + 0)
+			gui.line(sx, sy, sx    , sy + 7, (timer % 6 < 3) and "white" or "red")
+			gui.line(sx, sy, sx + 7, sy    , (timer % 6 < 3) and "white" or "red")
+		end
 
-		gui.box(x, y, x + mul.x - 2, y + mul.y - 2, c)
 
 	end
 
+	timer = timer + 1
+	input.update()
 	emu.frameadvance()
 end

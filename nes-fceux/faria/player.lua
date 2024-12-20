@@ -76,7 +76,7 @@
 		local levelExp	= 0
 		local levelLen	= 0
 
-		if expTable[level] then
+		if expTable[level] and expTable[level + 1] then
 			levelExp	= exp - expTable[level]
 			levelLen	= expTable[level + 1] - expTable[level]
 	

@@ -227,10 +227,10 @@ while (true) do
 
 	
 
---	text(142, 192, string.format("%02d lag frames", lastlag));
---	text(142, 216, string.format("%02d active sprites", tmp));
---	lifebar(144, 200, 100, 4, lastlag, 8, "#ffcc22", "#000000");
---	lifebar(144, 208, 100, 4, tmp, 12,    "#4488ff", "#000000");
+	text(145, 192, string.format("%02d lag frames", lastlag));
+	text(145, 217, string.format("%02d active sprites", tmp));
+	lifebar(144, 200, 100, 4, lastlag, 8, "#ff6600", "#000000");
+	lifebar(144, 208, 100, 4, tmp, 12,    "#4488ff", "#000000");
 
 	FCEU.frameadvance();
 

@@ -96,6 +96,7 @@ end
 
 function drawProcPositions()
 
+
 	for i = 0, 0x1B do
 		local baseAddr	= 0x15F + i * 0x30
 		if memory.readbyte(baseAddr) ~= 0 then
@@ -221,7 +222,7 @@ while true do
 	if show0000 then
 		drawCallsTo0000()
 	else
-		drawProcPositions()
+		--drawProcPositions()
 	end
 
 	if monitoredProc >= 0 then
