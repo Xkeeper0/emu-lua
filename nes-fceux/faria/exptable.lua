@@ -30,6 +30,6 @@
 	expTable[28]	= 50903
 	expTable[29]	= 63659
 	expTable[30]	= 79604
-	expTable[30]	= 99999
+	expTable[31]	= 99999 -- game limits you to 99998
 
 	return expTable

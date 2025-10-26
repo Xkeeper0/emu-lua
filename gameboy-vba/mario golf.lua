@@ -53,7 +53,7 @@
 
 		if ipt.Z then
 			butt	= true
-			--memory.writebyte(0xd047, 0x20)
+			memory.writebyte(0xd047, 0x20)
 		end
 
 		local cameraPos		= getPosition(0xc29a, 0xc29c)

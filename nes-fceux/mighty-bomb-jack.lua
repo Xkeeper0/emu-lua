@@ -99,7 +99,7 @@ function jukebox()
 	end
 end
 
-
+--[[
 function sub8D99()
 	local dividend = memory.readbyte(0x028) + memory.readbyte(0x029) * 0x100
 	local divisor = memory.readbyte(0x02a)
@@ -110,7 +110,7 @@ function sub_8D99_end()
 end
 memory.registerexec(0x8D99, sub8D99)
 memory.registerexec(0x8DC6, sub_8D99_end)
-
+--]]
 
 
 function calculateGDV()
@@ -174,23 +174,57 @@ end
 
 
 
+
+-- -----------------------------------------------------------------
+lastDoorCond		= 0
+lastDoorCondTime	= 0
+
+function doorCondHook()
+	lastDoorCond		= memory.getregister("a")
+	lastDoorCondTime	= timer
+
+end
+memory.registerexec(0xA991, doorCondHook)
+
+-- -----------------------------------------------------------------
+
+
 timer = 0
 while true do
 
 	m3CC	= memory.readbyte(0x3CC)
 	gui.text(0, 0, string.format("%02X", m3CC))
 
-	b1	= memory.readbyte(0x0B1)
-	d1	= memory.readbyte(0x0B3)
-	d2	= memory.readbyte(0x35E)
-	d3	= memory.readbyte(0x35F)
+	b1	= memory.readbyte(0x0B1)	-- alive enemy count
+	d1	= memory.readbyte(0x0B3)	-- enemy speed modifier
+	d2	= memory.readbyte(0x35E)	-- enemy spawn timer
+	d3	= memory.readbyte(0x35F)	-- enemy tf timer
 	gui.text(0, 9, string.format("%02X %02X %02X %02X", b1, d1, d2, d3))
 
-	showSoundEngine()
+	local DCT = timer - lastDoorCondTime
+	gui.text(202,   0, string.format("%02X  [%4d]", lastDoorCond, DCT), (DCT < 5 and "white" or "red"), "black")
+	gui.text(202,   8, string.format("%02X", memory.readbyte(0x0369)))
+	gui.text(170,  16, string.format("%02X %02X %02X %02X %02X", 
+	memory.readbyte(0x03BF),	-- CurrentRoomID
+	memory.readbyte(0x03C5),	-- CurrentRoomIDBackup
+	memory.readbyte(0x00E9),	-- CurrentRoomIDBackup2
+	memory.readbyte(0x00EA),	-- CurrentRoomIDBackup3
+	memory.readbyte(0x036A)		-- CurrentRoomIDBackup4
+
+))
+
+	-- showSoundEngine()
 	jukebox()
 
 	-- 6a6 enemy struct start
 	-- 0x18 bytes ea
+
+	dipswitchMenu(10, 30, memory.readbyte(0x3CE))
+	for i = 0, 6 do
+		dipswitchMenu(10, 38 + 7 * i, memory.readbyte(0x6A6 + i * 0x1C))
+	end
+	
+
 	if false then
 		local enemyOfs = 0x3CE
 		local enemySize = 0x1C
@@ -212,13 +246,14 @@ while true do
 			gui.text(20 + 34 * i, 20, xstr, "white", "#000000A0")
 		end
 
-	else
+	end
+	if false then
 		-- 6a6 enemy struct start
 		-- 0x18 bytes ea
 		local enemyOfs = 0x6A6
 		local enemySize = 0x1C
-		local enemyOfs = 0x452
-		local enemySize = 0x18
+		-- local enemyOfs = 0x452
+		-- local enemySize = 0x18
 		for i = 0, 6 do
 			local localOfs = enemyOfs + enemySize * i
 			local xstr = string.format("%3X", localOfs)
@@ -243,12 +278,11 @@ while true do
 		end
 	end
 
-
-
-	for i = 0, 0xC do
-		gui.text(0, 28 + i * 8, string.format("%02X", i * 2 + 1))
-	end
+	-- for i = 0, 0xC do
+	-- 	gui.text(0, 28 + i * 8, string.format("%02X", i * 2 + 1))
+	-- end
 
 	input.update()
+	timer	= timer + 1
 	emu.frameadvance()
 end

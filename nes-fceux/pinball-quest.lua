@@ -222,7 +222,7 @@ while true do
 	if show0000 then
 		drawCallsTo0000()
 	else
-		--drawProcPositions()
+		-- drawProcPositions()
 	end
 
 	if monitoredProc >= 0 then

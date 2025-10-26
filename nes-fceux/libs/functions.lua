@@ -5,6 +5,12 @@ function math.round(num, dec)
 	return math.floor( num * mult + 0.5 ) / mult
 end
 
+function clamp(v, min, max)
+	return math.min(math.max(v, min), max)
+end
+math.clamp = clamp
+
+
 -- draw fancy bar visualization
 -- x, y, w, h: position, size
 -- min, max, val: given range for values, actual value
@@ -81,6 +87,8 @@ function forceJSR(where)
 	memory.setregister("s", sp - 2)
 	memory.setregister("pc", where)
 	print(string.format("interrupted @ sp %02X  pc %04X", sp, pc))
+	print(string.format("new --> sp %02X  pc %04X", sp - 2, where))
+	print(string.format("to stack --> [$%04X] %04X", (0x100 + sp - 1), pc - 1))
 end
 
 
@@ -118,4 +126,129 @@ function dipswitchMenu(x, y, dips)
 		end
 	end
 	return toggleMask
+end
+
+
+function hexs(v, l)
+	return string.format("%0".. (l or 2) .."X", v)
+end
+function hexdump(t)
+	local o				= {}
+	for k,v in pairs(t) do
+		o[k]			= hexs(v)
+	end
+	return table.concat(o, " ")
+end
+
+
+function thinbinary(v, l, rev)
+	local out	= ""
+	local siz	= l or math.max(8, v ~= 0 and math.ceil(math.log(v) / math.log(2)) or 1)
+	for i = 0, siz - 1 do
+		if rev then
+			out		= out .. (AND(v, 2 ^ i) ~= 0 and "|" or ".")
+		else
+			out		= (AND(v, 2 ^ i) ~= 0 and "|" or ".") .. out
+		end
+	end
+	return out
+end
+
+
+function showmouse(crosshair)
+	local textx = (input.xmouse > 210) and (input.xmouse - 40) or (input.xmouse + 5)
+	local texty = (input.ymouse > 223) and (input.ymouse - 12) or (input.ymouse + 10)
+	if crosshair then
+		local csz	= (type(crosshair) == "number") and crosshair or 2
+		gui.line(input.xmouse - csz, input.ymouse, input.xmouse + csz, input.ymouse, "white")
+		gui.line(input.xmouse, input.ymouse - csz, input.xmouse, input.ymouse + csz, "white")
+	end
+	gui.text(textx, texty, string.format("%d,%d", input.xmouse, input.ymouse))
+end
+
+
+bf		= {}
+-- input: value, [carry]
+-- output: value, carry
+function bf.ROR(v, c)
+	local c2	= AND(0x01, v)
+	v		= AND(0xFF, math.floor(v / 2) + ((c and 0x80 * c or 0)))
+	return v, c2
+end
+function bf.ROL(v, c)
+	local c2	= (AND(v, 0x80) == 0x80 and 1 or 0)
+	v		= AND(0xFF, v * 2 + (c and c or 0))
+	return v, c2
+end
+function bf.LSR(v)
+	return AND(0xFF, math.floor(v / 2)), AND(0x01, v)
+end
+function bf.ASL(v)
+	local c2	= (AND(v, 0x80) == 0x80 and 1 or 0)
+	return AND(0xFF, v * 2), c2
+end
+-- shortcuts
+function bf.rshift(v, n)
+	return math.floor(v / math.pow(2, n))
+end
+function bf.lshift(v, n)
+	return v * math.pow(2, n)
+end
+
+
+-- access CPU registers with "cpuregisters.pc" instead of `memory.getregister("pc")`
+-- and clobber them with "cpuregisters.pc = 0xBEEF" instead of `memory.setregister("pc", 0xBEEF)`
+cpuregisters	= {}
+function cpuregisters:__index(key)
+	return memory.getregister(key)
+end
+function cpuregisters:__newindex(key, value)
+	return memory.setregister(key, value)
+end
+setmetatable(cpuregisters, cpuregisters)
+
+-- convenience table
+mem				= { byte = {}, sbyte = {}, word = {}, sword = {}}
+function mem.byte:__index(key)             return memory.readbyte(key)                  end
+function mem.byte:__newindex(key, value)   return memory.writebyte(key, value)          end
+function mem.sbyte:__index(key)            return memory.readbytesigned(key)            end
+function mem.sbyte:__newindex(key, value)  return memory.writebytesigned(key, value)    end
+function mem.word:__index(key)             return memory.readword(key)                  end
+function mem.word:__newindex(key, value)   return memory.writeword(key, value)          end
+function mem.sword:__index(key)            return memory.readwordsigned(key)            end
+function mem.sword:__newindex(key, value)  return memory.writewordsigned(key, value)    end
+setmetatable(mem.byte, mem.byte)
+setmetatable(mem.sbyte, mem.sbyte)
+setmetatable(mem.word, mem.word)
+setmetatable(mem.sword, mem.sword)
+
+
+
+-- right-down-rightdown shadow
+function textshadow(x, y, text, color, shadow)
+	gui.text(x + 1, y    , text, shadow, "clear")
+	gui.text(x + 1, y + 1, text, shadow, "clear")
+	gui.text(x    , y + 1, text, shadow, "clear")
+	gui.text(x    , y    , text, color , "clear")
+end
+-- outline of the four cardinal directions
+function textoutline(x, y, text, color, shadow)
+	gui.text(x + 1, y    , text, shadow, "clear")
+	gui.text(x    , y - 1, text, shadow, "clear")
+	gui.text(x - 1, y    , text, shadow, "clear")
+	gui.text(x    , y + 1, text, shadow, "clear")
+	gui.text(x    , y    , text, color , "clear")
+end
+-- full outline with corners
+function textoutline2(x, y, text, color, shadow)
+	gui.text(x + 1, y + 1, text, shadow, "clear")
+	gui.text(x    , y + 1, text, shadow, "clear")
+	gui.text(x - 1, y + 1, text, shadow, "clear")
+	gui.text(x + 1, y    , text, shadow, "clear")
+	gui.text(x - 1, y    , text, shadow, "clear")
+	gui.text(x    , y - 1, text, shadow, "clear")
+	gui.text(x + 1, y - 1, text, shadow, "clear")
+	gui.text(x - 1, y - 1, text, shadow, "clear")
+
+	gui.text(x    , y    , text, color , "clear")
 end
