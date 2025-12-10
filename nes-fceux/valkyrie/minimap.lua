@@ -75,7 +75,7 @@ function minimap()
 	local playerC	= (timer % 30 < 15) and "white" or "green"
 	minimapDot(x, y, mapW, mapH, playerX, playerY, playerC, playerC)
 
-	gui.text(0, 70, string.format("%02X / %02X  %6d", getEnemySpawns(playerX, playerY, inUW), tmpSpawnCheck, timer - tmpSpawnTime))
+	-- gui.text(0, 70, string.format("%02X / %02X  %6d", getEnemySpawns(playerX, playerY, inUW), tmpSpawnCheck, timer - tmpSpawnTime))
 
 end
 
