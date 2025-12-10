@@ -99,6 +99,7 @@ function button(x, y, w, h, color, hover)
 	local m = input.mouse()
 	local hit = hitbox(m.x, m.y, x, y, x + w, y + h)
 	local hitcol = hit and "gray" or "black"
+	local color = color and color or "gray"
 	local ret = false
 	if hit and input.pressed("leftclick") then
 		hitcol = "white"
@@ -107,6 +108,22 @@ function button(x, y, w, h, color, hover)
 		ret = -1   -- this will never bite me in the ass. never
 	end
 	gui.box(x, y, x + w, y + h, color, hitcol)
+	return ret
+end
+
+function multibutton(x, y, w, h, color, bordercolor, hovercolor)
+	local m = input.mouse()
+	local hit = hitbox(m.x, m.y, x, y, x + w, y + h)
+	local bordercolor = hit and (hovercolor and hovercolor or "P10") or (bordercolor and bordercolor or "P00")
+	local ret = 0
+	if hit and input.pressed("leftclick") then
+		bordercolor = "white"
+		ret = 1
+	elseif hit and input.pressed("rightclick") then
+		bordercolor = "red"
+		ret = 2
+	end
+	gui.box(x, y, x + w, y + h, color, bordercolor)
 	return ret
 end
 
@@ -226,6 +243,8 @@ setmetatable(mem.sword, mem.sword)
 
 -- right-down-rightdown shadow
 function textshadow(x, y, text, color, shadow)
+	local color = color and color or "white"
+	local shadow = shadow and shadow or "black"
 	gui.text(x + 1, y    , text, shadow, "clear")
 	gui.text(x + 1, y + 1, text, shadow, "clear")
 	gui.text(x    , y + 1, text, shadow, "clear")
@@ -233,6 +252,8 @@ function textshadow(x, y, text, color, shadow)
 end
 -- outline of the four cardinal directions
 function textoutline(x, y, text, color, shadow)
+	local color = color and color or "white"
+	local shadow = shadow and shadow or "black"
 	gui.text(x + 1, y    , text, shadow, "clear")
 	gui.text(x    , y - 1, text, shadow, "clear")
 	gui.text(x - 1, y    , text, shadow, "clear")
@@ -241,6 +262,8 @@ function textoutline(x, y, text, color, shadow)
 end
 -- full outline with corners
 function textoutline2(x, y, text, color, shadow)
+	local color = color and color or "white"
+	local shadow = shadow and shadow or "black"
 	gui.text(x + 1, y + 1, text, shadow, "clear")
 	gui.text(x    , y + 1, text, shadow, "clear")
 	gui.text(x - 1, y + 1, text, shadow, "clear")

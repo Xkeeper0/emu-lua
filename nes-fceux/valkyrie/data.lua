@@ -1,4 +1,12 @@
 
+--
+-- Data definitions for various bits of Valkyrie no Bouken
+--
+
+
+worldWidth		= 0x1000		-- 4096
+worldHeight		=  0xA00		-- 2560
+
 itemlist	= {}
 itemlist[0x01]	= "Lantrn"
 itemlist[0x02]	= "Lantrn2"
@@ -167,21 +175,6 @@ playercolors[0x00]	= 0x20
 playercolors[0x01]	= 0x2C
 playercolors[0x02]	= 0x1A
 playercolors[0x03]	= 0x25
-
-
-mapdots			= {}
-mapdots[1]		= {x =  996, y = 1888,	color = "#4444ff"};		-- house
-mapdots[2]		= {x =  773, y =  989,	color = "#4444ff"};		-- house
-mapdots[3]		= {x =  266, y = 2263,	color = "#00ff00"};		-- warp point
-mapdots[4]		= {x = 1800, y =  216,	color = "#00ff00"};		-- warp point
-mapdots[5]		= {x =  776, y =  344,	color = "#00ff00"};		-- warp point
-mapdots[6]		= {x = 2055, y = 2008,	color = "#00ff00"};		-- warp point
-mapdots[7]		= {x = 1863, y = 2045,	color = "#dd0000", name = "South Pyramid"};		-- s.pyramid
-mapdots[8]		= {x = 1607, y =  381,	color = "#dd0000", name = "North Pyramid"};		-- n.pyramid
-
-
-
-mappoints		= table.maxn(mapdots)
 
 
 
@@ -446,5 +439,31 @@ function valkyriepw_converttotext(pbytes)
 	end
 	return ptext, otext
 
+end
+
+
+spawnTable	= {}
+local spawnOfs	= 0x9BE8
+local otmp		= 0
+local spawncnt	= (0x9CB7 - 0x9BE8) / 3
+local uw		= false
+-- for i = 0, 207 do	-- ???
+for i = 0, (spawncnt - 1) do	-- ???
+	-- table start: 9BE8
+	-- underworld:  9C4B
+	-- table end: 9CB7
+	-- 9BE8 ~ 9CB7
+	-- 9C4B
+	-- 207 spawns(?)
+	-- format: XX YY TT
+	otmp		= spawnOfs + i * 3
+	uw			= otmp >= 0x9C4B
+	
+	spawnTable[i]	= {
+		x		= mem.byte[otmp    ],
+		y		= mem.byte[otmp + 1], -- - (uw and worldHeight or 0),
+		type	= mem.byte[otmp + 2],
+		uw		= uw
+	}
 end
 
