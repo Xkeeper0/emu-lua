@@ -31,11 +31,23 @@ function input.update()
 	prev	= cur
 	cur		= input.get()
 	imm		= {}
+
+	-- patch for Linux versions of FCEUX
+	if cur['click'] then
+		-- Linux FCEUX doesn't give the ____click keys,
+		-- instead giving a "click" key, with
+		-- bit 0 (1) = let, bit 1 (2) = right
+		cur.leftclick	= AND(cur.click, 1) == 1
+		cur.rightclick	= AND(cur.click, 2) == 2
+		-- no middle click
+	end		
+
 	for k,v in pairs(cur) do
 		if cur[k] and not prev[k] then
 			imm[k]	= true
 		end
 	end
+
 
 	return imm, cur
 end
