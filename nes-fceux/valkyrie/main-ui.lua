@@ -82,8 +82,15 @@ function gameloop()
 
 
 	-- Attack power
-	attackpow	= memory.readbyte(0x00e7)
-	textshadow(60 + (attackpow < 100 and 3 or 0), 227, string.format("%2d", attackpow), "yellow", "black")
+	attackpow		= mem.byte[0x00e7]
+	textshadow(59 + (attackpow < 100 and (attackpow < 10 and 6 or 3) or 0), 227, string.format("%d", attackpow), "yellow", "black")
+	
+	-- Spell
+	currentspell		= mem.byte[0x00e3]
+	currentspellcost	= mem.byte[0xA0C8 + currentspell]
+	if currentspell ~= 0 then
+		textshadow(79 + (currentspellcost < 10 and 3 or 0), 227, string.format("%d", currentspellcost), currentspellcost > heromp and "red" or currentspellcost * 2 > heromp and "yellow" or "P11", "black")
+	end
 
 	local money	= string.format("$%d", money)
 	gui.text(171 - string.len(money) * 3, 229, money, "yellow", "#533b05ff")
@@ -119,7 +126,7 @@ function gameloop()
 					-- an enemy of some kind
 					lifebar(enemy[i].x - 4, enemy[i].y - 7, enemyhpwidth(enemy[i].maxhp, 8, 42),  0, enemy[i].hp, enemy[i].maxhp, "#ffcc00", "#dd0000", "black")
 					textoutline2(enemy[i].x - 22, enemy[i].y - 7, string.format("%3d", enemy[i].hp), "white", "black")
-					textoutline2(enemy[i].x - 22, enemy[i].y + 2, string.format("%2X", enemy[i].t), "red", "black")
+					-- textoutline2(enemy[i].x - 22, enemy[i].y + 2, string.format("%2X", enemy[i].t), "red", "black")
 					-- textoutline2(enemy[i].x - 22, enemy[i].y + 10, string.format("%2X", enemy[i].uC), "yellow", "black")
 
 				else

@@ -1,0 +1,41 @@
+
+ 0 1 2 3 4 5 6 7 8 9 A B C D E F
+ . . . . . . . . . . . . . . E . 0
+ . . . . . 2 . . . . . 8 . . . . 1
+ . . . . . . . . . . 4 . . . A . 2
+ . . . . . 6 . . . . . . . . C . 3
+ . . . . . . . . . . . . . . . . 4
+
+0E  E
+15  2
+18  8
+2A  4
+2E  A
+35  6
+3E  C
+
+--,  --,  --,  --,  --,  --,  --,  --
+ 2,   2,   2,   2,   2,   2,   2,   3
+ 8,   9,  $A,  $B,  $C,  $D,   4,   4
+ 4,   4,   4,   4,   5,   5,   5,   5
+ 5,   5,   5,   5,   5,   6,  --,   6
+--,  --,  --,  --,  --,  --,  --,  --
+--,  --,  --,  --,  --,  --,  --,  --
+--,  --,  --,  --,  --,  --,  --,  --
+--,  --,  --,  --,  --,  --,  --,  --
+--,  --,  --,  --,  --,  --,  --,  --
+
+ 0  Underground        
+ 1  Outside            
+ 2  Tower              
+ 3  ColdKillersRoom    
+ 4  ParallelZone       
+ 5  SecretRoom         
+ 6  InATrap            
+ 7  StartPoint         
+ 8  GratBurnsRoom      
+ 9  BeatPlantsRoom     
+$A  WheelersRoom       
+$B  CentipedesRoom     
+$C  GratWingsRoom      
+$D  DeathBearsRoom     

@@ -27,7 +27,8 @@ else
 	x_requires(4);
 end;
 
-require 'ul_time';
+-- require 'ul_time';
+require 'socket';
 
 ys	= 8;
 
@@ -239,9 +240,10 @@ function magic()
 		introdelay	= introdelay - 1;
 	end;
 
-	t, t2	= time.sec_usec();
-	tt		= t + t2 / 1000000 + tzofs;
-	tl		= math.floor((timeto - tt) * 10000) / 10000;
+	-- t, t2	= time.sec_usec();
+	-- tt		= t + t2 / 1000000 + tzofs;
+	-- tl		= math.floor((timeto - tt) * 10000) / 10000;
+	tl		= socket.gettime() * 1000
 --	text(8, 8, tl);
 
 	if tl < 0 then

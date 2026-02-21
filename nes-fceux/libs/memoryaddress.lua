@@ -28,6 +28,14 @@ function writedecimal2(ofs, val) return writedecimal(ofs, 2, val) end
 function writedecimal4(ofs, val) return writedecimal(ofs, 4, val) end
 function writedecimal6(ofs, val) return writedecimal(ofs, 6, val) end
 
+function memory.readwordBE(ofs)
+	return mem.byte[ofs] * 0x100 + mem.byte[ofs + 1]
+end
+function memory.writewordBE(ofs, val)
+	mem.byte[ofs]		= math.floor(val / 0x100)
+	mem.byte[ofs + 1]	= val % 0x100
+end
+
 
 	local memoryFunctions	= {
 		byte	= {
@@ -49,6 +57,17 @@ function writedecimal6(ofs, val) return writedecimal(ofs, 6, val) end
 			signed		= {
 				read		= memory.readwordsigned,
 				write		= memory.writewordsigned,
+				},
+			},
+
+		wordBE	= {
+			unsigned	= {
+				read		= memory.readwordBE,
+				write		= memory.writewordBE,
+				},
+			signed		= {
+				read		= memory.readwordBE,
+				write		= memory.writewordBE,
 				},
 			},
 

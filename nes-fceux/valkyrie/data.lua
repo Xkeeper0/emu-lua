@@ -145,6 +145,24 @@ end
 leveltable[3]	= getrandomleveltable()
 
 
+enemytypes		= {}
+enemytypes[0x01]	= "Item"		-- An item?
+enemytypes[0x02]	= "????"		-- ?
+enemytypes[0x03]	= "Marco"		-- as in, the whale.
+enemytypes[0x04]	= "Tatta"		-- Tatta, Dadatta, Demon
+enemytypes[0x05]	= "Sandra"		-- Black Sandra, Tundra
+enemytypes[0x06]	= "Koakuman"	-- Koakuman, Kaokku, Khulna  (the poison guys)
+enemytypes[0x07]	= "Fly Drill"	-- Fly Drill, Honorian, Trigger (lazy flying guys)
+enemytypes[0x08]	= "Sochikisu"	-- Sochikisu, Dokusasu, Tauros (chompy bois)
+enemytypes[0x09]	= "Robotian"	-- Underground only
+enemytypes[0x0A]	= "Zouna"		-- The final boss
+enemytypes[0x0B]	= "Zuhl"		-- Thief
+enemytypes[0x0C]	= "Fireball"	-- Projectiles
+enemytypes[0x0D]	= "ZFireball"	-- The final boss's special fireballs
+enemytypes[0x0E]	= "DoorOpener"	-- Sandra Soul that opens the pyramids for you
+enemytypes[0x0F]	= "Shizasu"		-- Shizasu, Enmakonda, Twin Girasu -- tall minibosses
+
+
 
 asigns			= {}
 asigns[0x00]	= "Aries"

@@ -13,7 +13,7 @@ cheats				= {
 	-- autohealmp	= true,
 	-- automaxhp	= true,
 	-- automaxmp	= true,
-	-- autoexp		= true,
+	autoexp		= true,
 	-- automoney	= true,
 	}
 
@@ -237,12 +237,12 @@ while (true) do
 
 	-- showmouse(true)
 
-	local jx = 0
-	local jy = 50
-	if button(jx, jy, 41, 10, "gray") then
-		showjukebox	= not showjukebox
-	end
-	gui.text(jx + 3, jy + 2, "Jukebox", "white", "clear")
+	-- local jx = 0
+	-- local jy = 50
+	-- if button(jx, jy, 41, 10, "gray") then
+	-- 	showjukebox	= not showjukebox
+	-- end
+	-- gui.text(jx + 3, jy + 2, "Jukebox", "white", "clear")
 	if showjukebox then
 		jukeboxControls(60, 10)
 	end

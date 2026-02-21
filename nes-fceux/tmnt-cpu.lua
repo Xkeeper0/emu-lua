@@ -36,11 +36,11 @@ input				= require("libs/input")
 
 --]]
 
-spawnID	= 1
-function spawnThing()
-	memory.writebyte(0x02, spawnID)
-end
-memory.registerexec(0xb9a6, spawnThing)
+-- spawnID	= 1
+-- function spawnThing()
+-- 	memory.writebyte(0x02, spawnID)
+-- end
+-- memory.registerexec(0xb9a6, spawnThing)
 
 
 count = {}
@@ -308,12 +308,12 @@ while true do
 	end
 	--]]
 
-	if input.pressed("Y") then
-		spawnID	= spawnID - 1
-	elseif input.pressed("U") then
-		spawnID = spawnID + 1
-	end
-	gui.text(150, 50, string.format("%02X", spawnID))
+	-- if input.pressed("Y") then
+	-- 	spawnID	= spawnID - 1
+	-- elseif input.pressed("U") then
+	-- 	spawnID = spawnID + 1
+	-- end
+	-- gui.text(150, 50, string.format("%02X", spawnID))
 
 	drawScoreInfo()
 

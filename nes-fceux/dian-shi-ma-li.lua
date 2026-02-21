@@ -249,6 +249,40 @@ memory.registerexec(0xc0ab, c0ab)
 
 
 
+local lastplayed	= {}
+function hookQueueSound()
+	lastplayed[cpuregisters.a]	= timer
+end
+memory.registerexec(0xC3D2, hookQueueSound)
+
+function jukebox()
+	local xpos = 38
+	local ypos = 35
+	local bw = 12
+	local bh = 8
+	local xp = 1
+	local yp = 0
+	local brow	 = 0
+	local bcol	 = 0
+
+	local bpx	= 0
+	local bpy	= 0
+	for n = 0, 5 do
+		bpx	= xpos + bcol * (bw + xp)
+		bpy	= ypos + brow * (bh + yp)
+		local bcolor	= (lastplayed[n] and (timer - lastplayed[n]) < 6) and "green" or "gray"
+		if button(bpx, bpy, bw, bh, bcolor) then
+			cpuregisters.a	= n
+			print(n)
+			forceJSR(0xC3D2)
+		end
+		gui.text(bpx + 1, bpy + 1, string.format("%2X", n), "white", "clear")
+		bcol	= bcol + 1
+
+	end
+end
+
+
 
 showDips = true
 
@@ -391,7 +425,7 @@ while true do
 --]]
 
 
-
+	jukebox()
 	gui.text(217, 230, string.format("mode %2X", game.mode))
 
 	timer = timer + 1

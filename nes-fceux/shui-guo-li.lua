@@ -85,6 +85,45 @@ local dip	= MemoryCollection{
 
 local dipm = { "sw1", "sw2", "sw3", "sw4", "sw5" }
 
+
+
+
+local lastplayed	= {}
+function hookQueueSound()
+	lastplayed[cpuregisters.a]	= timer
+end
+memory.registerexec(0xDB2F, hookQueueSound)
+
+function jukebox()
+	local xpos = 38
+	local ypos = 35
+	local bw = 12
+	local bh = 8
+	local xp = 1
+	local yp = 0
+	local brow	 = 0
+	local bcol	 = 0
+
+	local bpx	= 0
+	local bpy	= 0
+	for n = 0, 4 do
+		bpx	= xpos + bcol * (bw + xp)
+		bpy	= ypos + brow * (bh + yp)
+		local bcolor	= (lastplayed[n] and (timer - lastplayed[n]) < 6) and "green" or "gray"
+		if button(bpx, bpy, bw, bh, bcolor) then
+			cpuregisters.a	= n
+			print(n)
+			forceJSR(0xDB2F)
+		end
+		gui.text(bpx + 1, bpy + 1, string.format("%2X", n), "white", "clear")
+		bcol	= bcol + 1
+
+	end
+end
+
+
+
+
 memory.registerexec(0xD0FD, multi_start)
 memory.registerexec(0xD14F, multi_end)
 memory.registerexec(0xEDDE, report_y)
@@ -105,6 +144,8 @@ while true do
 			yt = yt + 9
 		end
 	end
+
+	jukebox()
 
 	timer = timer + 1
 	input.update()

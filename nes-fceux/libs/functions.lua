@@ -73,12 +73,14 @@ function setDecimalValue(ofs, len, value)
 end
 
 
-function getReturnAddress()
+function getReturnAddress(fr)
 	local sp = memory.getregister("s")
-	return memory.readword(0x100 + sp + 1)
+	local fr = (fr and fr or 0)
+	if (sp + fr) >= 0x100 then return nil end
+	return memory.readword(0x100 + sp + 1 + (fr and fr or 0))
 end
 
-
+-- consider using wrappedJSR
 function forceJSR(where)
 	-- stack needs to be ret addr - 1
 	local sp = memory.getregister("s")
@@ -86,10 +88,108 @@ function forceJSR(where)
 	memory.writeword(0x100 + sp - 1, pc - 1)
 	memory.setregister("s", sp - 2)
 	memory.setregister("pc", where)
-	print(string.format("interrupted @ sp %02X  pc %04X", sp, pc))
-	print(string.format("new --> sp %02X  pc %04X", sp - 2, where))
-	print(string.format("to stack --> [$%04X] %04X", (0x100 + sp - 1), pc - 1))
+	print(string.format("Forcing JSR: PC=$%04X S=%02X -> $%04X", pc, sp, where))
+	-- print(string.format("new --> sp %02X  pc %04X", sp - 2, where))
+	-- print(string.format("to stack --> [$%04X] %04X", (0x100 + sp - 1), pc - 1))
 end
+
+
+-- CPU hooking helpers
+do
+	-- table of registered hooks    { addr =func }
+	local exechooks = {}
+	local execstates = {}
+
+	-- run when the game returns from a forced JSR
+	-- a forced JSR is really just
+	-- "pick up PC and put it elsewhere, while pushing it to the stack for a return"
+	-- there's no actual instruction that's run, so the PC ends up in the same spot.
+	--
+	-- LDA 0	
+	-- LDX 1	<-- if you forceJSR() here, an RTS will end up here again
+	-- CPX #2	    because we are returning *to* it -- we skipped it, after all
+	-- BNE ...
+	--
+	-- *unfortunately*, this will run the hook immediately after again.
+	-- so you get stuck in a loop of RTS -> triggers hook -> runs routine -> RTS ...
+	--
+	-- this whole mechanism is to indiana-jones-style swap out the hook,
+	-- so that it runs the first time, replaces it with a "cleanup" hook for the RTS,
+	-- and the cleanup hook restores the original one.
+	-- ...in theory.
+	local restorehook	= nil
+	local runhook		= nil
+	runhook	= function(addr, size, value)
+		-- print(string.format("Running func: %04X", addr))
+		memory.registerexec(addr, nil)
+		memory.registerexec(addr, restorehook)
+		if exechooks[addr] then 
+			-- print(string.format("  Executing: %04X", addr))
+			execstates[addr]	= {
+				a = cpuregisters.a,
+				x = cpuregisters.x,
+				y = cpuregisters.y,
+				p = cpuregisters.p,
+				}
+
+			exechooks[addr](addr, size, value)
+		end
+	end
+
+	restorehook = function(addr)
+		-- print(string.format("Restoring func: %04X", addr))
+		if execstates[addr] then
+			-- print(string.format("  Restoring state: %04X", addr))
+			cpuregisters.a = execstates[addr].a
+			cpuregisters.x = execstates[addr].x
+			cpuregisters.y = execstates[addr].y
+			cpuregisters.p = execstates[addr].p
+		end
+
+		memory.registerexec(addr, nil)
+		memory.registerexec(addr, runhook)
+	end
+
+	function wrapexec(addr, func)
+		print(string.format("Registering func: %04X", addr))
+		exechooks[addr]	= func
+		if func then restorehook(addr, func) end
+	end
+end
+
+
+
+-- wrappedJSR: forces PC to a new address, but restores registers
+-- saves A, X< Y, P, then pushes PC onto the stack
+-- when PC returns to where it was interrupted, restores A, X, Y, P
+-- will destroy any hooks at that address, but should allow cleaner interrupts
+do
+	local execstates = {}
+	local function unwrap(addr)
+		if execstates[addr] then
+			-- print(string.format("  Restoring state: %04X", addr))
+			cpuregisters.a = execstates[addr].a
+			cpuregisters.x = execstates[addr].x
+			cpuregisters.y = execstates[addr].y
+			cpuregisters.p = execstates[addr].p
+		end
+		execstates[addr]	= nil
+		memory.registerexec(addr, nil)
+	end
+	function wrappedJSR(addr)
+		local pc = memory.getregister("pc")
+		execstates[pc]	= {
+			a = cpuregisters.a,
+			x = cpuregisters.x,
+			y = cpuregisters.y,
+			p = cpuregisters.p,
+			}
+		memory.registerexec(pc, unwrap)
+		forceJSR(addr)
+	end
+end
+
+
 
 
 function hitbox(x, y, x1, y1, x2, y2)
@@ -97,6 +197,8 @@ function hitbox(x, y, x1, y1, x2, y2)
 end
 function button(x, y, w, h, color, hover)
 	local m = input.mouse()
+	local w = w and w or 8
+	local h = h and h or w
 	local hit = hitbox(m.x, m.y, x, y, x + w, y + h)
 	local hitcol = hit and "gray" or "black"
 	local color = color and color or "gray"
@@ -113,6 +215,8 @@ end
 
 function multibutton(x, y, w, h, color, bordercolor, hovercolor)
 	local m = input.mouse()
+	local w = w and w or 8
+	local h = h and h or w
 	local hit = hitbox(m.x, m.y, x, y, x + w, y + h)
 	local bordercolor = hit and (hovercolor and hovercolor or "P10") or (bordercolor and bordercolor or "P00")
 	local ret = 0
@@ -128,15 +232,16 @@ function multibutton(x, y, w, h, color, bordercolor, hovercolor)
 end
 
 
-function dipswitchMenu(x, y, dips)
+function dipswitchMenu(x, y, dips, bw, bh)
 	local toggleMask = 0
 	local xp = 0
-	local buttonSize = 6
+	local buttonWidth = bw and bw or 6
+	local buttonHeight = bh and bh or buttonWidth
 	local bitMask = 0
 	for i = 0, 7 do
 		bitMask = 2 ^ i
-		xp = x + (7 - i) * (buttonSize + 1)
-		if button(xp, y, buttonSize, buttonSize, (AND(dips, bitMask) ~= 0) and "white" or "gray") then
+		xp = x + (7 - i) * (buttonWidth + 1)
+		if button(xp, y, buttonWidth, buttonHeight, (AND(dips, bitMask) ~= 0) and "white" or "gray") then
 			-- because this is just bits in order,
 			-- this is basically just an OR
 			toggleMask = toggleMask + bitMask
@@ -238,6 +343,18 @@ setmetatable(mem.byte, mem.byte)
 setmetatable(mem.sbyte, mem.sbyte)
 setmetatable(mem.word, mem.word)
 setmetatable(mem.sword, mem.sword)
+
+-- minus 10 bytes to remove header
+romfile				= { byte = {}, sbyte = {}, word = {}, sword = {}}
+function romfile.byte:__index(key)             return rom.readbyte(key + 0x10)                  end
+function romfile.byte:__newindex(key, value)   return rom.writebyte(key + 0x10, value)          end
+function romfile.sbyte:__index(key)            return rom.readbytesigned(key + 0x10)            end
+function romfile.word:__index(key)             return rom.readbyte(key + 0x10) + rom.readbyte(key + 0x11) * 0x100 end
+-- function romfile.sbyte:__newindex(key, value)  return rom.writebytesigned(key, value)    end
+setmetatable(romfile.byte, romfile.byte)
+setmetatable(romfile.sbyte, romfile.sbyte)
+setmetatable(romfile.word, romfile.word)
+setmetatable(romfile.sword, romfile.sword)
 
 
 

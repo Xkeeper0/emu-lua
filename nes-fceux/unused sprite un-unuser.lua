@@ -1,4 +1,4 @@
-spriteBase	= 0x200
+spriteBase	= 0x700
 
 
 

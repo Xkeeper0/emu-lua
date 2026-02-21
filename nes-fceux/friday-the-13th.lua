@@ -60,7 +60,7 @@ function ShowCabinStatus(xp, yp)
 	for i = 0, 9 do
 		local x		= xp + 0
 		local y		= yp + 0 + (i * 8)
-		local cs	= memory.readbyte(0x074E + i)
+		local cs	= mem.byte[0x074E + i]
 		local ts	= ""
 		for xx = 1, 5 do
 			ts = ts .. (math.random(0, 100) < 50 and "." or "|")
@@ -72,21 +72,76 @@ function ShowCabinStatus(xp, yp)
 end
 
 
+objaddrs	= {}
+local oc = 0
+-- for i = 0x420, 0x47F, 8 do
+for i = 0x380, 0x3FF, 8 do
+	oc = oc + 1
+	objaddrs[oc] = i
+end
+
+objstart	= 0x300
+function ShowObjectList(px, py)
+	local px = px
+	local py = py
+
+	local r = 0
+
+	if button(px, py, 8, 8) then
+		objstart	= math.max(objstart - 0x80, 0x300)
+	end
+	if button(px, py + 8, 8, 8) then
+		objstart	= math.clamp(objstart + 0x80, 0x300, 0x780)
+	end
+
+	for idx = objstart, objstart + 0x7F, 8 do
+		local pyy = py + 8 * r
+		gui.text(px + 10, pyy, string.format("%3X", idx))
+		for i = 0, 7 do
+			local pxx = px + 32 + 14 * (i)
+			gui.text(pxx, pyy, hexs(mem.byte[idx + i]))
+		end
+
+		r = r + 1
+	end
+	--[[
+	for objindex, objofs in ipairs(objaddrs) do
+		local pxx = px + 12 + 13 * (objindex - 1)
+		gui.text(pxx, py - 16, string.format("%2X", objofs % 0x100))
+		for i = 0, 7 do
+			local pyy = py + 8 * i
+			gui.text(pxx, pyy, hexs(mem.byte[objofs + i]))
+		end
+	end
+	--]]
+end
+
+
+
+
+
 while true do
 
-	ShowCabinStatus(0, 0)
+	ShowCabinStatus(202, 0)
+	ShowObjectList(0, 16)
 
-	local yo	= 0
+	--[[
+	local yo	= 140
 	for k,v in pairs(game._m) do
-		gui.text(100, yo, k)
-		gui.text(200, yo, tostring(game[k]))
+		textshadow(0, yo, hexs(game[k]))
+		textshadow(16, yo, k)
 		yo		= yo + 8
 	end
+	--]]
 
 	for k,v in ipairs(H_80B4_calls) do
 		gui.text(10, k * 8, hexs(v, 4))
 	end
 
+	gui.text( 220, 120, hexs(cpuregisters.pc))
+	gui.text( 220, 128, string.format("%02X %02X", mem.byte[0x0A4], mem.byte[0x0A9]))
+	gui.text( 220, 136, string.format("%04X", mem.word[0x020]))
+	gui.text( 220, 144, string.format("%04X", mem.word[0x0A5]))
 
 	input.update()
 	timer	= timer + 1
