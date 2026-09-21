@@ -53,6 +53,7 @@ function trackCallsTo0000(addr)
 	local bank						= memory.readbyte(0xBFF9)	-- currently loaded bank. honk
 	local o0092						= (memory.readword(0x0092) - procBase) / 0x30
 	target	= routines[index] or string.format("%2X undefined", index)
+	-- if o0092 < 0x10 then return end
 	callsTo0000Count				= callsTo0000Count + 1
 	callsTo0000[callsTo0000Count]	= { bank = bank, addr = addr, index = index, target = target, o0092 = o0092 }
 end
@@ -95,8 +96,6 @@ end
 
 
 function drawProcPositions()
-
-
 	for i = 0, 0x1B do
 		local baseAddr	= 0x15F + i * 0x30
 		if memory.readbyte(baseAddr) ~= 0 then
@@ -222,7 +221,7 @@ while true do
 	if show0000 then
 		drawCallsTo0000()
 	else
-		-- drawProcPositions()
+		drawProcPositions()
 	end
 
 	if monitoredProc >= 0 then
