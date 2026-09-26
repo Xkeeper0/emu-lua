@@ -115,17 +115,7 @@ end
 -- see https://github.com/daid/LADXR/blob/master/patches/bank3e.asm/main.asm
 local ladxrmain = bank(0x3E, 0x4000)	-- ROM offset of the LADXR jump table
 local jumptable = bank(0x3E, 0x4008)	-- jump table start
-
-local ladxr_im_raw = jumptable + 0x02 * 0x03
-local ladxr_im_rawr = prg.word[ladxr_im_raw]
-local ladxr_itemmessage = bank(0x3E, prg.word[jumptable + 0x02 * 0x03] + 5)		-- ItemMessage is #3
-emu.log(string.format("o1: $%06X", ladxrmain))
-emu.log(string.format("jt: $%06X", jumptable))
-emu.log(string.format("im: $%06X", ladxr_im_raw))
-emu.log(string.format("im: $%06X", ladxr_im_rawr))
-emu.log(string.format("im: $%06X", ladxr_itemmessage))
-
-emu.log(string.format("ass: $%02X $%02X", prg.byte[ladxr_im_raw], prg.byte[ladxr_im_raw + 1]))
-
+-- ItemMessage is #3 in the jump table; skip over a few opcodes to get a reliable hook point
+local ladxr_itemmessage = bank(0x3E, prg.word[jumptable + 0x02 * 0x03] + 5)
 
 emu.addMemoryCallback(track_itemmessage, emu.callbackType.exec, ladxr_itemmessage, ladxr_itemmessage, emu.cpuType.gameboy, emu.memType.gbPrgRom)
