@@ -1,0 +1,161 @@
+
+local ladxr_items	= {}
+function ladxr_items:add(num, major, name, memaddr) 
+	self[num]	= { name = name, major = major, memaddr = memaddr }
+end
+
+local lv = {}
+lv[0]	= "Color Dungeon "
+lv[1]	= "Tail Cave "
+lv[2]	= "Bottle Grotto "
+lv[3]	= "Key Cavern "
+lv[4]	= "Angler's Tunnel "
+lv[5]	= "Catfish's Maw "
+lv[6]	= "Face Shrine "
+lv[7]	= "Eagle's Tower "
+lv[8]	= "Turtle Rock "
+lv[9]	= "Wind Fish's Egg "
+
+
+ladxr_items:add( 0x00, true, "Power Bracelet L-%d", 0xDB43 )
+ladxr_items:add( 0x01, true, "Shield L-%d", 0xDB44 )
+ladxr_items:add( 0x02, true, "Bow" )
+ladxr_items:add( 0x03, true, "Hookshot" )
+ladxr_items:add( 0x04, true, "Magic Rod" )
+ladxr_items:add( 0x05, true, "Pegasus Boots" )
+ladxr_items:add( 0x06, true, "Ocarina" )
+ladxr_items:add( 0x07, true, "Feather" )
+ladxr_items:add( 0x08, true, "Shovel" )
+ladxr_items:add( 0x09, true, "Magic Powder" )
+ladxr_items:add( 0x0A, true, "Bombs" )
+ladxr_items:add( 0x0B, true, "Sword L-%d", 0xDB4E )
+ladxr_items:add( 0x0C, true, "Flippers" )
+ladxr_items:add( 0x0D, true, "Magnifying Lens" )
+ladxr_items:add( 0x0E, true, "Boommerang" )
+ladxr_items:add( 0x0F, true, "Slime Key" )
+
+ladxr_items:add( 0x10, true, "Medicine" )
+ladxr_items:add( 0x11, true, "Tail Key" )
+ladxr_items:add( 0x12, true, "Angler Key" )
+ladxr_items:add( 0x13, true, "Face Key" )
+ladxr_items:add( 0x14, true, "Harpy Key" )
+ladxr_items:add( 0x15, true, "Golden Leaf (%d / 5)", 0xDB15 )
+ladxr_items:add( 0x16, false, "Map" )
+ladxr_items:add( 0x17, false, "Compass" )
+ladxr_items:add( 0x18, false, "Stone Beak" )
+ladxr_items:add( 0x19, true, "Nightmare Key" )
+ladxr_items:add( 0x1A, false, "Small Key" )
+ladxr_items:add( 0x1B, false, "50 Rupees. Nice." )
+ladxr_items:add( 0x1C, false, "20 Rupees! Joy." )
+ladxr_items:add( 0x1D, false, "100 Rupees! Wow!" )
+ladxr_items:add( 0x1E, false, "200 Rupees! Amazing!" )
+ladxr_items:add( 0x1F, false, "500 Rupees!? What the" )
+
+ladxr_items:add( 0x20, true, "Secret Seashell (%d/20)", 0xDB0F )
+ladxr_items:add( 0x21, false, "Master Stalfos's letter" )
+ladxr_items:add( 0x22, false, "One Gel" )
+ladxr_items:add( 0x23, false, lv[1] .. "Small Key (%d)", 0xDB1B + 5 * 0 )
+ladxr_items:add( 0x24, false, lv[2] .. "Small Key (%d)", 0xDB1B + 5 * 1 )
+ladxr_items:add( 0x25, false, lv[3] .. "Small Key (%d)", 0xDB1B + 5 * 2 )
+ladxr_items:add( 0x26, false, lv[4] .. "Small Key (%d)", 0xDB1B + 5 * 3 )
+ladxr_items:add( 0x27, false, lv[5] .. "Small Key (%d)", 0xDB1B + 5 * 4 )
+ladxr_items:add( 0x28, false, lv[6] .. "Small Key (%d)", 0xDB1B + 5 * 5 )
+ladxr_items:add( 0x29, false, lv[7] .. "Small Key (%d)", 0xDB1B + 5 * 6 )
+ladxr_items:add( 0x2A, false, lv[8] .. "Small Key (%d)", 0xDB1B + 5 * 7 )
+ladxr_items:add( 0x2B, false, lv[0] .. "Small Key (%d)", 0xDDDE )
+ladxr_items:add( 0x2C, false, lv[1] .. "Map" )
+ladxr_items:add( 0x2D, false, lv[2] .. "Map" )
+ladxr_items:add( 0x2E, false, lv[3] .. "Map" )
+ladxr_items:add( 0x2F, false, lv[4] .. "Map" )
+
+ladxr_items:add( 0x30, false, lv[5] .. "Map" )
+ladxr_items:add( 0x31, false, lv[6] .. "Map" )
+ladxr_items:add( 0x32, false, lv[7] .. "Map" )
+ladxr_items:add( 0x33, false, lv[8] .. "Map" )
+ladxr_items:add( 0x34, false, lv[0] .. "Map" )
+ladxr_items:add( 0x35, false, lv[1] .. "Compass" )
+ladxr_items:add( 0x36, false, lv[2] .. "Compass" )
+ladxr_items:add( 0x37, false, lv[3] .. "Compass" )
+ladxr_items:add( 0x38, false, lv[4] .. "Compass" )
+ladxr_items:add( 0x39, false, lv[5] .. "Compass" )
+ladxr_items:add( 0x3A, false, lv[6] .. "Compass" )
+ladxr_items:add( 0x3B, false, lv[7] .. "Compass" )
+ladxr_items:add( 0x3C, false, lv[8] .. "Compass" )
+ladxr_items:add( 0x3D, false, lv[0] .. "Compass" )
+ladxr_items:add( 0x3E, false, lv[1] .. "Stone Beak" )
+ladxr_items:add( 0x3F, false, lv[2] .. "Stone Beak" )
+
+ladxr_items:add( 0x40, false, lv[3] .. "Stone Beak" )
+ladxr_items:add( 0x41, false, lv[4] .. "Stone Beak" )
+ladxr_items:add( 0x42, false, lv[5] .. "Stone Beak" )
+ladxr_items:add( 0x43, false, lv[6] .. "Stone Beak" )
+ladxr_items:add( 0x44, false, lv[7] .. "Stone Beak" )
+ladxr_items:add( 0x45, false, lv[8] .. "Stone Beak" )
+ladxr_items:add( 0x46, false, lv[0] .. "Stone Beak" )
+ladxr_items:add( 0x47, true, lv[1] .. "Boss Key" )
+ladxr_items:add( 0x48, true, lv[2] .. "Boss Key" )
+ladxr_items:add( 0x49, true, lv[3] .. "Boss Key" )
+ladxr_items:add( 0x4A, true, lv[4] .. "Boss Key" )
+ladxr_items:add( 0x4B, true, lv[5] .. "Boss Key" )
+ladxr_items:add( 0x4C, true, lv[6] .. "Boss Key" )
+ladxr_items:add( 0x4D, true, lv[7] .. "Boss Key" )
+ladxr_items:add( 0x4E, true, lv[8] .. "Boss Key" )
+ladxr_items:add( 0x4F, true, lv[0] .. "Boss Key" )
+
+ladxr_items:add( 0x50, true, lv[0] .. "Mushroom" )
+ladxr_items:add( 0x51, false, "50 Rupees? Uh..." ) -- 51
+ladxr_items:add( 0x52, false, "20 Rupees? Ugh." )
+ladxr_items:add( 0x53, false, "100 Rupees? Nope." )
+ladxr_items:add( 0x54, false, "Secret Seashell? (%d/20)", 0xDB0F )
+ladxr_items:add( 0x55, false, "Medicine?" )
+ladxr_items:add( 0x56, true, "Bombs?" )
+ladxr_items:add( 0x57, true, "Hammer" ) -- 57
+ladxr_items:add( 0x58, true, "Tail Cave opened" )
+ladxr_items:add( 0x59, true, "Key Cavern opened" )
+ladxr_items:add( 0x5A, true, "Angler's Tunnel opened" )
+ladxr_items:add( 0x5B, true, "Face Shrine opened" )
+ladxr_items:add( 0x5C, true, "Kanlet Castle Gate opened" )
+ladxr_items:add( 0x5D, true, "Eagle's Tower opened" )
+-- 5E (none...)F5
+
+-- 0x80
+ladxr_items:add( 0x80, false, "Piece of Heart (%d/4)", 0xDB5C )
+ladxr_items:add( 0x81, true, "Bow-wow! Good dog." )
+ladxr_items:add( 0x82, false, "10 arrows" )
+ladxr_items:add( 0x83, false, "1 arrow..." )
+ladxr_items:add( 0x84, true, "Magic Powder capacity up!" )
+ladxr_items:add( 0x85, true, "Bomb capacity up!" )
+ladxr_items:add( 0x86, true, "Arrow capacity up!" )
+ladxr_items:add( 0x87, true, "Red Tunic" )
+ladxr_items:add( 0x88, true, "Blue Tunic" )
+ladxr_items:add( 0x89, true, "Heart Container" )
+ladxr_items:add( 0x8A, true, "Lose a Heart Container" )
+ladxr_items:add( 0x8B, true, "Ballad o.t. Wind Fish" )
+ladxr_items:add( 0x8C, true, "Mambo's Mambo" )
+ladxr_items:add( 0x8D, true, "Song of Soul" )
+ladxr_items:add( 0x8E, true, lv[1] .. "Instrument" )
+ladxr_items:add( 0x8F, true, lv[2] .. "Instrument" )
+ladxr_items:add( 0x90, true, lv[3] .. "Instrument" )
+ladxr_items:add( 0x91, true, lv[4] .. "Instrument" )
+ladxr_items:add( 0x92, true, lv[5] .. "Instrument" )
+ladxr_items:add( 0x93, true, lv[6] .. "Instrument" )
+ladxr_items:add( 0x94, true, lv[7] .. "Instrument" )
+ladxr_items:add( 0x95, true, lv[8] .. "Instrument" )
+ladxr_items:add( 0x96, true, "Flying Rooster" )
+ladxr_items:add( 0x97, true, "Yoshi Doll" )
+ladxr_items:add( 0x98, true, "Ribbon" )
+ladxr_items:add( 0x99, true, "Dog Food" )
+ladxr_items:add( 0x9A, true, "Bananas" )
+ladxr_items:add( 0x9B, true, "Stick" )
+ladxr_items:add( 0x9C, true, "Honeycomb" )
+ladxr_items:add( 0x9D, true, "Pineapple" )
+ladxr_items:add( 0x9E, true, "Hibiscus" )
+ladxr_items:add( 0x9F, true, "Letter" )
+ladxr_items:add( 0xA0, true, "Broom" )
+ladxr_items:add( 0xA1, true, "Fishing Hook" )
+ladxr_items:add( 0xA2, true, "Necklace" )
+ladxr_items:add( 0xA3, true, "Scale" )
+ladxr_items:add( 0xA4, true, "Magnifying Lens" )
+
+
+return ladxr_items
