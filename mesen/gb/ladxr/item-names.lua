@@ -4,6 +4,22 @@ function ladxr_items:add(num, major, name, memaddr)
 	self[num]	= { name = name, major = major, memaddr = memaddr }
 end
 
+
+-- returns array of itembar status messages to display
+function ladxr_items:get_itembar_messages(item_id)
+	local item = self[item_id]
+	emu.log(string.format("item request: %x %d", item_id, item_id))
+	emu.log(string.format("mem request: %4x", item.memaddr or 0))
+	emu.log(string.format("mem result: %4x", mem.byte[item.memaddr or 0]))
+	if item.memaddr then
+		return string.format(item.name, mem.byte[item.memaddr]), item.major
+	end
+	return item.name, item.major
+
+end
+
+
+
 local lv = {}
 lv[0]	= "Color Dungeon "
 lv[1]	= "Tail Cave "

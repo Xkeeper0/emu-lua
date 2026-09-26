@@ -3,19 +3,6 @@ ladxr_items = require "ladxr/item-names"
 
 
 
-
-function get_item_msg(item_id)
-	local item = ladxr_items[item_id]
-	emu.log(string.format("item request: %x %d", item_id, item_id))
-	emu.log(string.format("mem request: %4x", item.memaddr or 0))
-	emu.log(string.format("mem result: %4x", mem.byte[item.memaddr or 0]))
-	if item.memaddr then
-		return string.format(item.name, mem.byte[item.memaddr]), item.major
-	end
-	return item.name, item.major
-end
-
-
 do
 	local itembar_state = 0		-- closed / opening / open / closing
 	local itembar_trans_time = 10
@@ -120,7 +107,7 @@ function track_itemmessage()
 	local item_id = cpuregisters.a
 	-- emu.displayMessage("Item", string.format("Got item: %02X", item_id))
 	cpuregisters.pc = cpuregisters.pc + (0xB - 0x05) -- skip out of routine, go to nearest ret
-	local msg, major = get_item_msg(item_id)
+	local msg, major = ladxr_items:get_itembar_messages(item_id)
 	add_itemline(msg, major)
 	
 end

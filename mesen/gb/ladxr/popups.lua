@@ -1,6 +1,14 @@
 -- handlers for various kinds of popups / "flying text"
 
 
+--[[
+
+	eventual plans:
+	i'd like to refactor this to be more of a self-contained table
+	and maybe do some other things, idk. i forgor
+
+--]]
+
 
 
 local pops = {}
