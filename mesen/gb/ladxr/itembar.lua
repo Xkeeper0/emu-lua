@@ -107,8 +107,12 @@ function track_itemmessage()
 	local item_id = cpuregisters.a
 	-- emu.displayMessage("Item", string.format("Got item: %02X", item_id))
 	cpuregisters.pc = cpuregisters.pc + (0xB - 0x05) -- skip out of routine, go to nearest ret
-	local msg, major = ladxr_items:get_itembar_messages(item_id)
-	add_itemline(msg, major)
+	emu.log("test1 ".. hexs(item_id))
+	local to_add = ladxr_items:get_itembar_messages(item_id)
+	for i, m in ipairs(to_add) do
+		emu.log("test3 ".. m.msg)
+		add_itemline(m.msg, m.major)
+	end
 	
 end
 
