@@ -23,6 +23,7 @@ do
 	function draw_itemlines()
 		-- emu.drawString(0, 116, string.format("s=%d t=%d l=%d", itembar_state, itembar_timer, #itembar_queue))
 		-- y=124~139
+		local itembar_bg	= 0x00000000
 		local yc	= 136
 		local trans_timer = itembar_trans_time
 		if itembar_state == 0 then
@@ -35,11 +36,11 @@ do
 				ys = math.floor(((itembar_trans_time - itembar_timer) / itembar_trans_time) * itembar_size)
 
 			end
-			emu.drawRectangle(0, yc - ys, 160, ys * 2, 0x00000000, true)
+			emu.drawRectangle(0, yc - ys, 160, ys * 2, itembar_bg, true)
 
 		else
 			-- already open
-			emu.drawRectangle(0, yc - itembar_size, 160, itembar_size * 2, 0x00000000, true)
+			emu.drawRectangle(0, yc - itembar_size, 160, itembar_size * 2, itembar_bg, true)
 
 			
 			local xw = itembar_queue[1].size.width

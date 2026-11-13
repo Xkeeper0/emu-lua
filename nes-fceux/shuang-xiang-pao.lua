@@ -413,9 +413,9 @@ while true do
 		sofs = sofs + 2
 	end
 
-	-- palettes()
-	-- paino()
-	-- jukebox()
+	palettes()
+	paino()
+	jukebox()
 
 	timer = timer + 1
 	input.update()

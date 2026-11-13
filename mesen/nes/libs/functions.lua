@@ -226,7 +226,7 @@ end
 function getReturnAddress(frame)
 	local sp = cpuregisters.sp
 	local frame = frame or 0
-	emu.log(string.format("sp %02X f %02X", sp, frame))
+	-- emu.log(string.format("sp %02X f %02X", sp, frame))
 	if (sp + frame >= 0x100) then return nil end
 	local retaddr = mem.word[0x100 + sp + frame + 1]
 	return retaddr, (retaddr >= 0x8000 and emu.convertAddress(retaddr).address or false)
@@ -234,7 +234,13 @@ end
 
 
 
-
+function table.flip(t)
+	local out = {}
+	for k, v in pairs(t) do
+		out[v] = k
+	end
+	return out
+end
 
 
 -- function hook
